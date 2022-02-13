@@ -1,7 +1,7 @@
 module.exports = {
-    name: 'repo',
-    description: 'Link to the bot\'s repository',
+    name: 'Support',
+    description: 'このbotのサポートサーバー',
     execute(message) {
-        message.channel.send('This project is open-source and available at https://github.com/Jystro/Minecraft-info-bot');
+        message.channel.send('https://discord.gg/Y6w5Jv3EAR');
     }
 }
