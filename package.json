@@ -9,7 +9,7 @@
   "author": "Jystro",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^12.4.1",
+    "discord.js": "^13.6.0",
     "dotenv": "^8.2.0",
     "mojang-api": "0.0.2"
   }
