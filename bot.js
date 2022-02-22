@@ -3,19 +3,19 @@
 'use strict'
 require('dotenv').config();
 
-const Discord = require('discord.js');
+const  Discord = require("discord.js");
 const fs = require('fs');
 
-//create servers.json if it doesn't exist
+// 起動処理
+//config関係
 if(!fs.existsSync('./data/servers.json')) {
-    console.log('servers.json が存在しない');
+    console.log('servers.json が存在しません');
     console.log('servers.jsonを作成中...');
     fs.writeFileSync('./data/servers.json', '{}', err => {
         console.error(err);
     });
     console.log('完了しました!');
 }
-//create config.json if it doesn't exist
 if(!fs.existsSync('./data/config.json')) {
     console.log('config.json が存在しない');
     console.log('config.jsonの作成...');
@@ -24,17 +24,22 @@ if(!fs.existsSync('./data/config.json')) {
     });
     console.log('完了しました!');
 }
+
+
+
 //check if DISCORD_TOKEN is defined
 if(!process.env.DISCORD_TOKEN) {
     console.log('環境変数DISCORD_TOKENが定義されていない');
     //create .env if it doesn't exist
     if(!fs.existsSync('./.env')) {
-        console.log('.env が存在しない');
+        console.log('.env が存在していません');
         console.log('.envの作成...');
-        fs.writeFileSync('./.env', 'DISCORD_TOKEN=', err => {
+        fs.writeFileSync('./.env', '#  configファイル','DISCORD_TOKEN=', err => {
+            console.error('内部エラーが発生しました。エラーを表示します');
             console.error(err);
         });
         console.log('完了しました!');
+        console.log('.env内にある項目を設定してください')
     }
     console.log('環境変数DISCORD_TOKENを設定するか、または .env');
 }
@@ -42,7 +47,8 @@ if(!process.env.DISCORD_TOKEN) {
 const servers = require('./exports/exports.js');
 const defaultPrefix = require('./data/config.json').defaultPrefix;
 
-const client = new Discord.Client();
+// Discord.js v13対応
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: ['DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILDS'] });
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -60,7 +66,9 @@ client.once('ready', () => {
 });
 
 
-client.on('message', message => {
+// messageイベントが非推奨になったらしいので message→messageCreateに変更
+
+client.on('messageCreate', message => {
     //check that author isn't a bot
     if (message.author.bot) return;
     //get prefix from servers.json
@@ -76,6 +84,7 @@ client.on('message', message => {
             client.commands.get(args[0]).execute(message, args.slice(1, args.length), prefix);
         }
         catch(err) {
+            console.error('内部エラーが発生しました。エラーを表示します');
             console.error(err);
             message.reply('コマンドの実行中に何か問題が発生しました');
         }
@@ -88,6 +97,8 @@ client.on('message', message => {
             client.commands.get('help').execute(message, args.slice(1, args.length), prefix);
         }
         catch(err) {
+            console.error('内部エラーが発生しました。エラーを表示します')
+            console.error(err);
             message.reply('コマンドの実行中に何か問題が発生しました');
         }
     }
