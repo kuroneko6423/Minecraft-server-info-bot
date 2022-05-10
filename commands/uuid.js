@@ -2,7 +2,7 @@ const mojang = require('mojang-api');
 
 module.exports = {
     name: 'uuid',
-    description: 'ニックネームからプレーヤーのuuidを検索します。',
+    description: 'プレイヤー名からuuidを検索します。',
     args: '<nickname>',
     execute(message, args) {
         //check if there're arguments
@@ -16,7 +16,7 @@ module.exports = {
                 console.log(err);
                 message.reply('エラー発生');
             }
-            else message.channel.send(resp[0].name + '\のUUIDは\n' + resp[0].id);
+            else message.channel.send(resp[0].name + 'のUUIDは' + resp[0].id + "です");
         });
     }
 }

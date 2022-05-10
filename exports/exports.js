@@ -6,7 +6,7 @@ module.exports = {
         try {
             let servers = JSON.parse(fs.readFileSync('./data/servers.json'));
             //check if the guild has a custom prefix
-            if(typeof(servers[id].prefix.value) !== '未定義') {
+            if(servers[id] && servers[id].prefix.value) {
                 return servers[id].prefix.value;
             }
             return defaultPrefix;
@@ -65,7 +65,7 @@ module.exports = {
                 });
 
                 fs.writeFileSync('./data/servers.json', JSON.stringify(servers, null, 4));
-                resolve({ message: '権限のあるロールの更新に成功' });
+                resolve({ message: '権限のあるロールの更新に成功しました' });
             }
             catch(err) {
                 reject({ message: '認証されたロールを変更しようとするとエラーが発生しました。Discordサーバーに参加して報告してください。', error: err })
@@ -92,7 +92,7 @@ module.exports = {
                 });
 
                 fs.writeFileSync('./data/servers.json', JSON.stringify(servers, null, 4));
-                resolve({ message: '権限のあるロールの更新に成功' });
+                resolve({ message: '権限のあるロールの更新に成功しました' });
             }
             catch(err) {
                 reject({ message: '認証されたロールを変更しようとするとエラーが発生しました。Discordサーバーに参加して報告してください。', error: err })

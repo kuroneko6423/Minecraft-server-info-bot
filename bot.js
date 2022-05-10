@@ -42,7 +42,12 @@ if(!process.env.DISCORD_TOKEN) {
 const servers = require('./exports/exports.js');
 const defaultPrefix = require('./data/config.json').defaultPrefix;
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+    intents: [
+        Discord.Intents.FLAGS.GUILDS,
+        Discord.Intents.FLAGS.GUILD_MESSAGES,
+    ]
+});
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -60,7 +65,7 @@ client.once('ready', () => {
 });
 
 
-client.on('message', message => {
+client.on('messageCreate', message => {
     //check that author isn't a bot
     if (message.author.bot) return;
     //get prefix from servers.json
@@ -70,7 +75,7 @@ client.on('message', message => {
         //get arguments.args[0] === command name
         const args = message.content.toLowerCase().slice(prefix.length).split(' ');
         //check if command exists
-        if(!client.commands.has(args[0])) return;
+        if(!client.commands.has(args[0])) return message.reply(`不明なコマンドです。\`${prefix}help\`を確認してください。`);
         //execute command
         try {
             client.commands.get(args[0]).execute(message, args.slice(1, args.length), prefix);

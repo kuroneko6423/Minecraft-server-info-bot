@@ -3,12 +3,12 @@ const servers = require('../exports/exports.js');
 
 module.exports = {
     name: 'prefix',
-    description: 'Prefixのするコマンド',
-    args: '[set/role] [set/add/remove/clear]',
+    description: 'サーバーのPrefixを設定します',
+    args: '(set <prefix>|role (set|add|remove|clear)) ',
     execute(message, args) {
         //send server's prefix if there're no arguments
         if(!args.length) {
-            message.channel.send('このサーバーのprefixは' + servers.getPrefix(message.guild.id));
+            message.reply('このサーバーのprefixは' + servers.getPrefix(message.guild.id) + "です");
             return;
         }
         //prefix set
@@ -20,21 +20,21 @@ module.exports = {
             memberRoles.forEach(role => {
                 if(authorisedRoles.includes(role.id)) { authorised = true }
             });
-            if(!authorised) { return message.channel.send('このコマンドを使用する権限がありません。')}
+            if(!authorised) { return message.reply('このコマンドを使用する権限がありません。')}
             //check if a prefix is specified
             if(args[1]) {
                 //update the prefix
                 servers.setPrefix(message.guild.id, args[1])
                     .then(response => {
-                        message.channel.send(response.message);
+                        message.reply(response.message);
                     })
                     .catch(err => {
-                        message.channel.send(err.message);
+                        message.reply(err.message);
                         console.error(err.error);
                     });
             }
             else {
-                message.channel.send('有効なprefixを入力してください。');
+                message.reply('有効なprefixを入力してください。');
             }
         }
         //prefix role
@@ -48,7 +48,7 @@ module.exports = {
                 memberRoles.forEach(role => {
                     if(authorisedRoles.includes(role.id)) { authorised = true }
                 });
-                if(!authorised) { return message.channel.send('このコマンドを使用する権限がありません。')}
+                if(!authorised) { return message.reply('このコマンドを使用する権限がありません。')}
                 //remove 'role' arg
                 args.shift();
                 if(args[0] === 'set') {
@@ -57,15 +57,15 @@ module.exports = {
                         .then(() => {
                             servers.addRole(message.guild.id, args)
                                 .then(response => {
-                                    return message.channel.send(response.message);
+                                    return message.reply(response.message);
                                 })
                                 .catch(err => {
-                                    message.channel.send(err.message);
+                                    message.reply(err.message);
                                     return console.error(err.error);
                                 });
                         })
                         .catch(err => {
-                            message.channel.send(err.message);
+                            message.reply(err.message);
                             return console.error(err.error);
                         });
                 }
@@ -73,10 +73,10 @@ module.exports = {
                     args.shift();
                     servers.addRole(message.guild.id, args)
                         .then(response => {
-                            return message.channel.send(response.message);
+                            return message.reply(response.message);
                         })
                         .catch(err => {
-                            message.channel.send(err.message);
+                            message.reply(err.message);
                             return console.error(err.error);
                         });
                 }
@@ -84,20 +84,20 @@ module.exports = {
                     args.shift();
                     servers.removeRole(message.guild.id, args)
                         .then(response => {
-                            return message.channel.send(response.message);
+                            return message.reply(response.message);
                         })
                         .catch(err => {
-                            message.channel.send(err.message);
+                            message.reply(err.message);
                             return console.error(err.error);
                         });
                 }
                 else if(args[0] === 'clear') {
                     servers.removeRole(message.guild.id, servers.getRoles(message.guild.id))
                         .then(response => {
-                            return message.channel.send(response.message);
+                            return message.reply(response.message);
                         })
                         .catch(err => {
-                            message.channel.send(err.message);
+                            message.reply(err.message);
                             return console.error(err.error);
                         });
                 }
@@ -106,13 +106,13 @@ module.exports = {
             else {
                 let roles = servers.getRoles(message.guild.id);
                 if(roles.length) {
-                    let response = 'プレフィックスを変更することができる役割:';
+                    let response = 'prefixを変更することができるロール:';
                     roles.forEach(role => {
                         response += ` <@&${role}>`;
                     });
-                    return message.channel.send(response);
+                    return message.reply(response);
                 }
-                return message.channel.send('プレフィックスを変更できるのはサーバー管理者だけです');
+                return message.reply('prefixを変更できるのはサーバー管理者のみです');
             }
         }
     }
