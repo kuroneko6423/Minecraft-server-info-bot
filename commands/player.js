@@ -1,26 +1,27 @@
 const mojang = require('mojang-api');
 const https = require('https');
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
     name: 'player',
-    description: 'プレーヤの名前、Uuid、スキン、ケープ、名前の履歴を表示します',
+    description: 'プレイヤーの名前、UUID、スキン、ケープ、名前の履歴を表示します',
     args: '<uuid/name>',
     execute(message, args) {
         //check that a value is sent
         if(!args.length) {
-            message.reply('プレーヤーを指定してください\' uuid');
+            message.reply('プレイヤーを指定してください');
             return;
         }
         //get uuid
         this.getUuid(args[0], (err, uuid) => {
             if(err) {
-                message.channel.send('エラーが発生しました。理由：プレーヤーが存在しないから。');
+                message.channel.send('無効なUUIDです。');
                 return;
             }
             //check that uuid exists
             mojang.profile(uuid, (err, resp) => {
                 if(err) {
-                    message.reply('そのプレーヤーのuuidは存在しない');
+                    message.reply('そのプレイヤーのuuidは存在しません');
                     return;
                 }
                 //get name history
@@ -34,52 +35,31 @@ module.exports = {
                     resp1.forEach(element => {
                         nameHistory.push(element.name);
                     });
-                    nameHistory = nameHistory.join(', ');
+                    nameHistory = nameHistory.join('\n');
                     //create embed message
-                    let embedMessage = {
-                        color: '#00b300',
-                        title: resp.name,
-                        author: {
-                            name: 'Minecraft info',
-                            url: 'https://github.com/kuroneko6423/Minecraft-server-info-bot'
-                        },
-                        description: resp.name + "'s profile",
-                        thumbnail: {
-                            url: 'https://crafatar.com/avatars/' + resp.id + '.png?overlay'
-                        },
-                        fields: [{
-                            name: 'Name',
-                            value: resp.name
-                        },
-                        {
-                            name: 'UUID',
-                            value: resp.id
-                        },
-                        {
-                            name: 'Skin',
-                            value: 'https://crafatar.com/skins/' + resp.id + '.png'
-                        }],
-                        image: {
-                            url: 'https://crafatar.com/renders/body/' + resp.id + '.png?overlay'
-                        },
-                        timestamp: new Date(),
-                        footer: {
-                            text: '黒猫ちゃんbot\n20分ごとに更新されます。'
-                        }
-                    };
+                    let embed = new MessageEmbed()
+                    .setColor("#00b300")
+                    .setTitle(resp.name + "のプロフィール")
+                    .setDescription(`${resp.id}`)
+                    .addField("スキン", `https://crafatar.com/skins/${resp.id}.png`, true)
+                    .setAuthor({name: "Minecraft Info", url: 'https://github.com/kuroneko6423/Minecraft-server-info-bot'})
+                    .setThumbnail(`https://crafatar.com/avatars/${resp.id}.png?overlay'`)
+                    .setImage(`https://crafatar.com/renders/body/${resp.id}.png?overlay`)
+                    .setTimestamp(new Date())
+                    .setFooter({text: "Created by 黒猫ちゃん | データは20分ごとに更新されます"});
                     //check if cape exists
                     let cape = 'https://crafatar.com/capes/' + resp.id + '.png';
                     const req = https.request(cape, res => {
                         if(res.statusCode == 200) {
-                            embedMessage.fields.push({ name: 'マント', value: cape });
+                            embed.addField('ケープ', cape);
                         }
-                        embedMessage.fields.push({ name: '氏名履歴', value: nameHistory });
+                        embed.addField('名前履歴', nameHistory );
                         //send embed
-                        message.channel.send({  embed: embedMessage  });
+                        message.channel.send({embeds: [embed]});
                     });
                     req.on('error', err => {
                         console.log(err);
-                        message.reply('マントの取得中にエラーが発生しました。');
+                        message.reply('ケープの取得中にエラーが発生しました。');
                     })
                     req.end();
                 });
