@@ -3,6 +3,7 @@
 'use strict'
 require('dotenv').config();
 
+const client = new Client({ intents: Object.keys(Intents.FLAGS) })
 const Discord = require('discord.js');
 const fs = require('fs');
 
