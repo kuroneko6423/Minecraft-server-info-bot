@@ -46,6 +46,7 @@ const client = new Discord.Client({
     intents: [
         Discord.Intents.FLAGS.GUILDS,
         Discord.Intents.FLAGS.GUILD_MESSAGES,
+        Discord.Intents.FLAGS.GUILD_PRESENCES,
     ]
 });
 client.commands = new Discord.Collection();
