@@ -1,5 +1,6 @@
 # Minecraft-server-info-bot
 
+npm i discord.js@13 mojang-api
 server - Minecraftのjava版のserver情報を表示します。<br>
 beserver - Minecraftのbedrock版のserver情報を表示します。<br>
 uuid - java版のplayerのUUIDを表示します。<br>
