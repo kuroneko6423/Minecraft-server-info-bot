@@ -32,7 +32,7 @@ module.exports = {
             response.on('end', () => {
                 resp = JSON.parse(str);
                 if(!resp.hostname) {
-                    message.channel.send('サーバーが見つかりませんでした。' + args[0]);
+                    message.channel.send('サーバーが見つかりませんでした。');
                     return;
                 }
                 //create answer message with default offline data
