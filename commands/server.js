@@ -26,7 +26,7 @@ module.exports = {
             response.on('end', () => {
                 resp = JSON.parse(str);
                 if(!resp.hostname) {
-                    message.reply('IPアドレスを持つサーバーが見つかりませんでした。' + args[0]);
+                    message.reply('IPアドレスを持つサーバーが見つかりませんでした。');
                     return;
                 }
                 //create answer message with default offline data
